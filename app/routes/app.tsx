@@ -3,7 +3,9 @@ import { useFetcher } from "@remix-run/react";
 import { ActionFunction } from "@remix-run/node";
 
 type Value = {
-  val: string;
+  yourTotalAmtCalc: string;
+  youOweFinalCalc: string;
+  youOweFinal: string;
 };
 
 const invalidNumber = (num: number): boolean => {
@@ -56,7 +58,7 @@ export default function NumberForm() {
 
   return (
     <div className="p-4 max-w-md mx-auto">
-      <div>Calculate your portion</div>
+      <div className="font-bold">Calculate your portion</div>
       <fetcher.Form method="post" className="space-y-2" onSubmit={handleSubmit}>
         <div>
           Total <b>after</b> tax + tips, etc
@@ -125,9 +127,20 @@ export default function NumberForm() {
       </fetcher.Form>
 
       {fetcher.data !== undefined && (
-        <div className="mt-4 text-lg font-bold">
-          Your portion: {fetcher.data.val}
-        </div>
+        <>
+          <div className="mt-4 text-lg font-bold">
+            Your portion: {fetcher.data.youOweFinal}
+          </div>
+          <div className="mt-4 text-lg font-bold">
+            How is the number calculated?
+          </div>
+          <div className="mt-4 text-lg">
+            Your total amount: {fetcher.data.yourTotalAmtCalc}
+          </div>
+          <div className="mt-4 text-lg">
+            You owe: {fetcher.data.youOweFinalCalc}
+          </div>
+        </>
       )}
     </div>
   );
@@ -136,10 +149,23 @@ export default function NumberForm() {
 // Remix action function in the same file or in route file
 export const action: ActionFunction = async ({ request }): Promise<Value> => {
   const formData = await request.formData();
-  const numbers = formData.getAll("numbers").map(Number);
-  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  const numbers = formData.getAll("numbers") as string[];
+
+  const yourTotalAmt = numbers.map(Number).reduce((acc, num) => acc + num, 0);
+  const yourTotalAmtCalc =
+    numbers.reduce((acc, num, i) => {
+      if (i === 0) {
+        return `${acc}${num}`;
+      } else {
+        return `${acc} + ${num}`;
+      }
+    }, "") + (numbers.length === 1 ? "" : ` = ${yourTotalAmt}`);
+
   const total = parseFloat(formData.get("total") as string);
   const vanilla = parseFloat(formData.get("vanilla") as string);
-  const val = ((sum / vanilla) * total).toFixed(2);
-  return { val };
+
+  const youOweFinal = ((yourTotalAmt / vanilla) * total).toFixed(2);
+  const youOweFinalCalc = `(${yourTotalAmt} / ${vanilla}) * ${total} = ${youOweFinal}`;
+
+  return { yourTotalAmtCalc, youOweFinalCalc, youOweFinal };
 };
