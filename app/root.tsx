@@ -31,10 +31,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="max-w-3xl mx-auto px-4 py-12">
+        <header className="text-center">
+          <h1 className="text-4xl font-bold text-purple-800 mb-2">
+            SpliTheBill
+          </h1>
+        </header>
+
         {children}
         <ScrollRestoration />
         <Scripts />
+        {/* Footer */}
+        <footer className="text-center text-gray-500 text-sm">
+          <p>© {new Date().getFullYear()} SpliTheBill App</p>
+          <p className="mt-1">Making group payments fair and friendly</p>
+        </footer>
       </body>
     </html>
   );

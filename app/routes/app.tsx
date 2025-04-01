@@ -57,8 +57,11 @@ export default function NumberForm() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <div className="font-bold">Calculate your portion</div>
+    <div className="max-w-md mx-auto mb-12">
+      <p className="text-xl mb-4 text-purple-600 text-center">
+        Calculate your portion
+      </p>
+
       <fetcher.Form method="post" className="space-y-2" onSubmit={handleSubmit}>
         <div>
           Total <b>after</b> tax + tips, etc
@@ -113,14 +116,14 @@ export default function NumberForm() {
         <button
           type="button"
           onClick={addInput}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-green-500 text-white px-4 py-2 rounded"
         >
           Add another
         </button>
-
+        <br />
         <button
           type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded"
+          className="bg-purple-500 text-white px-4 py-2 rounded"
         >
           Calculate your portion
         </button>
